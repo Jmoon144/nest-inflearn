@@ -1,5 +1,3 @@
-import { HttpExceptionFilter } from './../http-exception.filter';
-import { CatsService } from './cats.service';
 import {
   Controller,
   Delete,
@@ -11,9 +9,14 @@ import {
   Post,
   Put,
   UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
+import { HttpExceptionFilter } from '../common/exceptions/http-exception.filter';
+import { CatsService } from './cats.service';
+import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 
 @Controller('cats')
+@UseInterceptors(SuccessInterceptor)
 @UseFilters(HttpExceptionFilter)
 export class CatsController {
   constructor(private readonly CatsService: CatsService) {}
@@ -21,9 +24,8 @@ export class CatsController {
   //cats/
   @Get()
   getAllCat() {
-    //에러처리 커스텀가능
-    throw new HttpException('api broken', 401);
-    return 'get all cat';
+    console.log('hello controller');
+    return { cats: 'get all cat' };
   }
 
   //cats/id
