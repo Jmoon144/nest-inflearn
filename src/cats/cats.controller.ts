@@ -21,38 +21,28 @@ import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor'
 export class CatsController {
   constructor(private readonly CatsService: CatsService) {}
 
-  //cats/
   @Get()
-  getAllCat() {
-    console.log('hello controller');
-    return { cats: 'get all cat' };
-  }
-
-  //cats/id
-  @Get(':id')
-  getOneCat(@Param('id', ParseIntPipe) id: number) {
-    console.log(id);
-    console.log(typeof id);
-    return 'get one cat';
+  getCurrentCat() {
+    return 'current cat';
   }
 
   @Post()
-  createCat() {
-    return 'create cat';
+  async signUp() {
+    return 'signup';
   }
 
-  @Put(':id')
-  updateCat() {
-    return 'update cat';
+  @Post('login')
+  logIn() {
+    return 'login';
   }
 
-  @Patch(':id')
-  updatePartialCal() {
-    return 'update';
+  @Post('logout')
+  logOut() {
+    return 'logout';
   }
 
-  @Delete(':id')
-  deleteCat() {
-    return 'delete service';
+  @Post('upload/cats')
+  uploadCatImg() {
+    return 'uploadImg';
   }
 }
