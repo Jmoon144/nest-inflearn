@@ -1,5 +1,7 @@
+import { UserRequestDto } from './dto/user.request.dto';
 import { HttpExceptionFilter } from './../common/exceptions/http-exception.filter';
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -21,8 +23,8 @@ export class UserController {
   }
 
   @Post()
-  async signUp() {
-    return 'signup';
+  async signUp(@Body() body: UserRequestDto) {
+    return this.UserService.Signup;
   }
 
   @Post('login')
