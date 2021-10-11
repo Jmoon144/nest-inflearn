@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class UserRequestDto {
   @IsEmail()
@@ -7,6 +7,9 @@ export class UserRequestDto {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/^[a-zA-Z0-9]*$/, {
+    message: 'password only accepts english and number',
+  })
   password: string;
 
   @IsString()

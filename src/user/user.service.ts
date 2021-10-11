@@ -1,32 +1,38 @@
-import { UserRepository } from './user.repository';
 import { UserRequestDto } from './dto/user.request.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { UserRepository } from './user.repository';
+import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserRepository)
-    private usersRepository: UserRepository,
+    private userRepository: UserRepository,
     private jwtService: JwtService,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  //회원가입
+  async signUp(userRequestDto: UserRequestDto): Promise<void> {
+    return this.userRepository.createUser(userRequestDto);
   }
 
-  findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
-  }
+  //로그인
+  async signIn(
+    userRequestDto: UserRequestDto,
+  ): Promise<{ accessToken: string }> {
+    const { name, password } = userRequestDto;
+    const user = await this.userRepository.findOne({ name });
 
-  async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
-  }
+    if (user && (await bcrypt.compare(password, user.password))) {
+      //유저 토큰 생성( secret + payload(중요한 정보x))
+      const payload = { name };
+      const accessToken = await this.jwtService.sign(payload);
 
-  signUp(body: UserRequestDto) {
-    const { email, name, password } = body;
-    const isUserExist = await thi;
+      return { accessToken };
+    } else {
+      throw new UnauthorizedException('login failed');
+    }
   }
 }

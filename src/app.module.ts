@@ -1,22 +1,9 @@
 import { UserModule } from './user/user.module';
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { typeORMConfig } from 'configs/typeorm.config';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      autoLoadEntities: true,
-    }),
-    UserModule,
-  ],
-  controllers: [],
-  providers: [],
+  imports: [TypeOrmModule.forRoot(typeORMConfig), UserModule],
 })
-export class AppModule implements NestModule {
-  private readonly isDev: boolean = process.env.MODE === 'dev' ? true : false;
-
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

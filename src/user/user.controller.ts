@@ -1,34 +1,20 @@
-import { UserRequestDto } from './dto/user.request.dto';
-import { HttpExceptionFilter } from './../common/exceptions/http-exception.filter';
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UseFilters,
-  UseInterceptors,
-} from '@nestjs/common';
-import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { UserService } from './user.service';
+import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { UserRequestDto } from './dto/user.request.dto';
 
-@Controller('user')
-@UseInterceptors(SuccessInterceptor)
-@UseFilters(HttpExceptionFilter)
+@Controller('auth')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private userService: UserService) {}
 
-  @Get()
-  getCurrentUser() {
-    return 'current user';
+  @Post('/signup')
+  signUp(@Body(ValidationPipe) userRequestDto: UserRequestDto): Promise<void> {
+    return this.userService.signUp(userRequestDto);
   }
 
-  @Post()
-  async signUp(@Body() body: UserRequestDto) {
-    return this.UserService.Signup;
-  }
-
-  @Post('login')
-  logIn() {
-    return 'login';
+  @Post('/signin')
+  signIn(
+    @Body(ValidationPipe) userRequestDto: UserRequestDto,
+  ): Promise<{ accessToken: string }> {
+    return this.userService.signIn(userRequestDto);
   }
 }
